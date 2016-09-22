@@ -16,9 +16,20 @@
 
 
 window.findNRooksSolution = function(n) {
-  var solution = undefined; //fixme
+  var board = new Board({'n': n});
+  var solution = board.rows();
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
+  var count = 0;
+
+  for (var i = 0; i < n; i++) {
+    solution[i][count] = 1;
+    count += 1;    
+  }
+
+
+
+
+  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board));
   return solution;
 };
 
