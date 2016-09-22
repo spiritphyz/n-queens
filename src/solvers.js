@@ -1,4 +1,4 @@
-/*           _
+/**           _
    ___  ___ | |_   _____ _ __ ___
   / __|/ _ \| \ \ / / _ \ '__/ __|
   \__ \ (_) | |\ V /  __/ |  \__ \
@@ -13,8 +13,6 @@
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
 
-
-
 window.findNRooksSolution = function(n) {
   var board = new Board({'n': n});
   var solution = board.rows();
@@ -26,16 +24,30 @@ window.findNRooksSolution = function(n) {
     count += 1;    
   }
 
-
-
-
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(board));
   return solution;
 };
 
 // return the number of nxn chessboards that exist, with n rooks placed such that none of them can attack each other
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; //fixme
+  var solutionCount = 0;
+  var board = new Board({n: n});
+
+  var searchRows = function(row) {
+    if (row === n) {
+      solutionCount++;
+      return;
+    }
+    for (var i = 0; i < n; i++) {
+      board.togglePiece(row, i);
+      if (board.hasAnyRooksConflicts() === false) {
+        searchRows(row + 1);
+      }
+      board.togglePiece(row, i);
+    }
+  };
+
+  searchRows(0);
 
   console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
@@ -56,3 +68,34 @@ window.countNQueensSolutions = function(n) {
   console.log('Number of solutions for ' + n + ' queens:', solutionCount);
   return solutionCount;
 };
+
+/* possible algorithm
+
+make solutions array
+make multiple possibilities array:
+  1-possible
+  2-possible
+  3-posssible
+  n-possible
+
+start with 1, go up to n
+  - put 1 piece into the helper array
+    - have helper array build up "1-possible" array
+  - loop through '1-possible' array
+    - put each board into the helper and put piece 2 as input
+
+helper function:
+  input: starting board, # starting pieces on board, piece to test
+  output: possible board or no board
+  
+  uses starting board:
+    takes the test piece and moves it through all open slots
+      start searching after the slot of the last-placed piece
+        if next slot is last slot (> n - 1), then return from loop
+      is there conflict in open slot?
+        move to next open slot
+      if no conflict:
+        toggle the piece on the board and add to board
+        return board as possibility to array: '#startPiece' + '-possible'
+    after all open slots are exhausted, return 'no possibilites'
+*/
